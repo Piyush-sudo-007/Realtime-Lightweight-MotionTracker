@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Motion Target Boxing</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body style="overflow: hidden; background: #070310;">
+
+  <div class="game-hud-bar">
+    <div style="display: flex; gap: 1rem; align-items: center;">
+      <a href="../index.html" class="btn btn-outline" style="padding: 0.4rem 1rem; font-size: 0.85rem; pointer-events: auto;">← Main Menu</a>
+      <div class="status-badge" style="background: rgba(0,0,0,0.8);">
+        <div id="statusDot" class="status-dot"></div>
+        <span id="statusText">Phone Control Ready</span>
+      </div>
+    </div>
+
+    <div class="game-score-box" style="border-color: var(--accent-magenta); box-shadow: 0 0 15px var(--accent-magenta);">
+      SCORE: <span id="scoreVal" style="color: var(--accent-magenta);">0</span> | COMBO: <span id="comboVal" style="color: var(--accent-cyan);">0x</span>
+    </div>
+  </div>
+
+  <!-- Start Overlay -->
+  <div id="startOverlay" style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(10, 14, 23, 0.9); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem;">
+    <h1 style="font-size: 3rem; color: var(--accent-magenta); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 0.5rem;">MOTION TARGET BOXING</h1>
+    <p style="color: var(--text-muted); max-width: 500px; margin-bottom: 2rem;">
+      Use your hands & fists to smash pop-up targets in real-time!
+      <br><br>
+      • <strong>Left Punch:</strong> Strike targets on the left side of the screen<br>
+      • <strong>Right Punch:</strong> Strike targets on the right side of the screen<br>
+      • Build up streak combos for double multiplier points!
+    </p>
+    <button id="startGameBtn" class="btn btn-magenta" style="padding: 1rem 3rem; font-size: 1.2rem;">START BOXING</button>
+  </div>
+
+  <div class="game-viewport">
+    <canvas id="gameCanvas" class="game-canvas"></canvas>
+  </div>
+
+  <script src="../js/games/boxing_game.js"></script>
+</body>
+</html>

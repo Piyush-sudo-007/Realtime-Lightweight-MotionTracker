@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space Motion Runner</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body style="overflow: hidden; background: #05070c;">
+
+  <div class="game-hud-bar">
+    <div style="display: flex; gap: 1rem; align-items: center;">
+      <a href="../index.html" class="btn btn-outline" style="padding: 0.4rem 1rem; font-size: 0.85rem; pointer-events: auto;">← Main Menu</a>
+      <div class="status-badge" style="background: rgba(0,0,0,0.8);">
+        <div id="statusDot" class="status-dot"></div>
+        <span id="statusText">Phone Control Ready</span>
+      </div>
+    </div>
+
+    <div class="game-score-box">
+      SCORE: <span id="scoreVal" style="color: var(--accent-cyan);">0</span> | DIST: <span id="distVal" style="color: var(--accent-yellow);">0m</span>
+    </div>
+  </div>
+
+  <!-- Start Overlay -->
+  <div id="startOverlay" style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(10, 14, 23, 0.9); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem;">
+    <h1 style="font-size: 3rem; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 0.5rem;">SPACE MOTION RUNNER</h1>
+    <p style="color: var(--text-muted); max-width: 500px; margin-bottom: 2rem;">
+      Control your ship using body motion captured by your phone camera!
+      <br><br>
+      • <strong>Lean Body Left / Right</strong> to dodge incoming obstacles<br>
+      • <strong>Jump Up</strong> to hop over low barriers<br>
+      • <strong>Squat / Duck</strong> to slide under high beams
+    </p>
+    <button id="startGameBtn" class="btn btn-primary" style="padding: 1rem 3rem; font-size: 1.2rem;">START RUNNING</button>
+  </div>
+
+  <div class="game-viewport">
+    <canvas id="gameCanvas" class="game-canvas"></canvas>
+  </div>
+
+  <script src="../js/games/runner_game.js"></script>
+</body>
+</html>

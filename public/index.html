@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Realtime Motion Tracker - Desktop Launcher</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="logo">MOTION<span>TRACKER</span></div>
+    <div class="status-badge">
+      <div id="statusDot" class="status-dot"></div>
+      <span id="statusText">Phone Disconnected</span>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="grid-2">
+      
+      <!-- Pairing Section -->
+      <div class="card qr-container">
+        <div class="card-header" style="width: 100%;">
+          <span>📱 Smartphone Pairing</span>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">Step 1</span>
+        </div>
+        
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem;">
+          Scan QR Code using your phone camera or enter URL in phone browser:
+        </p>
+        
+        <div class="qr-box">
+          <img id="qrImage" src="" alt="Scanning QR Code...">
+        </div>
+        
+        <div class="url-box" id="urlBox">http://loading...</div>
+        
+        <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--accent-cyan);">
+          ✓ Phone & PC must be on the same Wi-Fi network
+        </div>
+      </div>
+
+      <!-- Quick Launch & Control Panel -->
+      <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div class="card-header">
+            <span>🎮 Motion Game Launcher</span>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Step 2</span>
+          </div>
+
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+            Once your phone is paired, launch one of the built-in motion-controlled arcade games or open the live HUD dashboard:
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <a href="dashboard.html" class="btn btn-outline" style="justify-content: flex-start; gap: 1rem;">
+              <span style="font-size: 1.4rem;">🖥️</span>
+              <div>
+                <div style="font-weight: bold; color: var(--text-main);">Open Calibration HUD & Visualizer</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Monitor skeleton vectors, adjust sensitivity & deadzones</div>
+              </div>
+            </a>
+
+            <a href="games/runner.html" class="btn btn-primary" style="justify-content: flex-start; gap: 1rem;">
+              <span style="font-size: 1.4rem;">🏃</span>
+              <div>
+                <div style="font-weight: bold;">Space Motion Runner</div>
+                <div style="font-size: 0.8rem; color: #000;">Lean body left/right to dodge, jump hurdles, duck barriers</div>
+              </div>
+            </a>
+
+            <a href="games/boxing.html" class="btn btn-magenta" style="justify-content: flex-start; gap: 1rem;">
+              <span style="font-size: 1.4rem;">🥊</span>
+              <div>
+                <div style="font-weight: bold;">Motion Target Boxing</div>
+                <div style="font-size: 0.8rem; color: #fff;">Punch targets popping up on screen using hand tracking</div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+          <div style="font-size: 0.85rem; color: var(--accent-yellow); display: flex; align-items: center; gap: 0.5rem;">
+            <span>💻 External PC Game Mode:</span>
+            <code style="background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">python python_bridge/motion_to_keys.py</code>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Mode Selector Info Cards -->
+    <div class="grid-3" style="margin-top: 2rem;">
+      <div class="card">
+        <div class="card-header" style="font-size: 1rem;">🧘 Body Pose Mode</div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+          Uses MediaPipe Pose to track 33 body keypoints. Translates leaning into smooth analog steering, jumping into hop triggers, and squatting into duck actions.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="font-size: 1rem; color: var(--accent-magenta);">🥊 Hand Tracking Mode</div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+          Tracks wrist and finger keypoints in 3D. Detects punch strikes, directional pointer coordinates, and high-velocity hand gestures.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="font-size: 1rem; color: var(--accent-yellow);">⚡ Ultra-Light Motion Grid</div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+          Zero-AI high-speed frame differencing algorithm. Ideal for low-end smartphone processors or maximum FPS performance.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const socket = io();
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const qrImage = document.getElementById('qrImage');
+    const urlBox = document.getElementById('urlBox');
+
+    // Fetch API connection info
+    fetch('/api/info')
+      .then(res => res.json())
+      .then(data => {
+        qrImage.src = data.qrImageData;
+        urlBox.innerText = data.phoneUrl;
+      })
+      .catch(err => console.error(err));
+
+    socket.on('init_state', (state) => {
+      if (state.hasPhoneConnected) {
+        statusDot.classList.add('connected');
+        statusText.innerText = 'Phone Connected';
+      }
+    });
+
+    socket.on('phone_status', (status) => {
+      if (status.connected) {
+        statusDot.classList.add('connected');
+        statusText.innerText = 'Phone Connected';
+      } else {
+        statusDot.classList.remove('connected');
+        statusText.innerText = 'Phone Disconnected';
+      }
+    });
+  </script>
+</body>
+</html>

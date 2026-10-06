@@ -1,0 +1,25 @@
+{
+  "name": "motion-tracker",
+  "version": "1.0.0",
+  "description": "Realtime lightweight motion tracker for games using smartphone camera",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "motion-tracking",
+    "mediapipe",
+    "socketio",
+    "game-controller",
+    "computer-vision"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2",
+    "ip": "^2.0.1",
+    "qrcode": "^1.5.3",
+    "socket.io": "^4.7.5"
+  }
+}

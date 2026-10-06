@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Motion Visualizer & Calibration HUD</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="logo">
+      <a href="index.html" style="text-decoration: none; color: inherit;">MOTION<span>HUD</span></a>
+    </div>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+      <a href="index.html" class="btn btn-outline" style="padding: 0.4rem 1rem; font-size: 0.85rem;">← Back to Hub</a>
+      <div class="status-badge">
+        <div id="statusDot" class="status-dot"></div>
+        <span id="statusText">Phone Offline</span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="grid-2">
+      
+      <!-- Visualizer Telemetry Canvas -->
+      <div class="card">
+        <div class="card-header">
+          <span>📡 Realtime Motion Telemetry</span>
+          <span style="font-size: 0.85rem; font-family: monospace; color: var(--accent-yellow);" id="modeDisplay">MODE: POSE</span>
+        </div>
+
+        <div class="canvas-wrapper">
+          <canvas id="hudCanvas" width="640" height="480"></canvas>
+
+          <div class="hud-overlay">
+            <div class="hud-stat" id="fpsStat">FPS: 0</div>
+            <div class="hud-stat" id="pingStat">LATENCY: 0ms</div>
+          </div>
+
+          <div id="triggerIndicator" class="trigger-indicator">IDLE</div>
+        </div>
+
+        <div style="margin-top: 1rem; display: flex; justify-content: space-around; font-family: monospace; font-size: 0.85rem;">
+          <div>LEAN: <span id="leanVal" style="color: var(--accent-cyan);">0.00</span></div>
+          <div>JUMP: <span id="jumpVal" style="color: var(--accent-cyan);">OFF</span></div>
+          <div>DUCK: <span id="duckVal" style="color: var(--accent-cyan);">OFF</span></div>
+          <div>PUNCH: <span id="punchVal" style="color: var(--accent-magenta);">OFF</span></div>
+        </div>
+      </div>
+
+      <!-- Controls & Calibration Panel -->
+      <div class="card">
+        <div class="card-header">⚙️ Sensitivity & Calibration Controls</div>
+
+        <div class="form-group">
+          <label>Tracking Engine Mode</label>
+          <select id="modeSelect">
+            <option value="pose">Body Pose (Lean, Jump, Duck)</option>
+            <option value="hand">Hand Tracking (Punch, Pointer)</option>
+            <option value="grid">Ultra-Fast Motion Grid</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Motion Sensitivity (1 - 10)</label>
+          <div class="slider-container">
+            <input type="range" id="sensitivitySlider" min="1" max="10" value="5">
+            <span class="slider-val" id="sensitivityVal">5</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Deadzone Threshold</label>
+          <div class="slider-container">
+            <input type="range" id="deadzoneSlider" min="0.05" max="0.4" step="0.01" value="0.15">
+            <span class="slider-val" id="deadzoneVal">0.15</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Filter Smoothing (0.1 - 0.9)</label>
+          <div class="slider-container">
+            <input type="range" id="smoothingSlider" min="0.1" max="0.9" step="0.05" value="0.5">
+            <span class="slider-val" id="smoothingVal">0.5</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(0, 0, 0, 0.4); border-radius: 8px; font-size: 0.85rem; color: var(--text-muted);">
+          <strong style="color: var(--accent-cyan);">Calibration Tip:</strong> Increase sensitivity if movements feel unresponsive. Increase deadzone if camera jitter causes accidental triggering.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/dashboard_client.js"></script>
+</body>
+</html>
